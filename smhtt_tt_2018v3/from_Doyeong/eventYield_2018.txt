@@ -1,0 +1,26 @@
+
+Keys in file: ['tt_0jet', 'tt_boosted_onejet', 'tt_boosted_multijet', 'tt_vbf_lowHpT', 'tt_vbf_highHpT']
+data_obs in tt_0jet  105156.0
+ZL in tt_0jet  651.060932159
+embedded in tt_0jet  12998.3649187
+jetFakes in tt_0jet  91682.7135735
+data_obs in tt_boosted_onejet  39555.0
+ZL in tt_boosted_onejet  249.812608123
+embedded in tt_boosted_onejet  10174.3978168
+jetFakes in tt_boosted_onejet  29093.3987886
+data_obs in tt_boosted_multijet  21919.0
+ZL in tt_boosted_multijet  137.46612528
+embedded in tt_boosted_multijet  9719.61492586
+jetFakes in tt_boosted_multijet  11338.628279
+data_obs in tt_vbf_lowHpT  1865.0
+ZL in tt_vbf_lowHpT  11.2994644195
+embedded in tt_vbf_lowHpT  1057.24687064
+jetFakes in tt_vbf_lowHpT  743.312988281
+data_obs in tt_vbf_highHpT  528.0
+ZL in tt_vbf_highHpT  0.715648055077
+embedded in tt_vbf_highHpT  502.040630698
+jetFakes in tt_vbf_highHpT  36.5952028908
+
+ dataIntegral =  169023.0
+
+ embedded_integral =  34451.6651627
