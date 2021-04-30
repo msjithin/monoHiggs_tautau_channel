@@ -198,7 +198,7 @@ void tautau_analyzer::Loop(Long64_t maxEvents, int reportEvery, string SampleNam
 	{
 	  if(debug)cout<<"metfilters selected"<<endl;
 	  //cout<<__LINE__<<endl;
-	  if(is_MC) fabs(genWeight) > 0.0 ? event_weight *= genWeight/fabs(genWeight) : event_weight = 0;
+	  //if(is_MC) fabs(genWeight) > 0.0 ? event_weight *= genWeight/fabs(genWeight) : event_weight = 0;
 	  nMETFiltersPassed_dyll+=event_weight;
 	  if(debug)cout<<"genweight applied"<<endl;
 	  if(  passTauTrigger )
@@ -277,11 +277,14 @@ void tautau_analyzer::Loop(Long64_t maxEvents, int reportEvery, string SampleNam
 						  if(debug)cout<<"this worked Line 374"<<endl;
 						  fillHist("5_dyll",  Tau1Index, Tau2Index, false, event_weight);
 						  nll = nll +1;
-						  if(deltaR > 2.0 )
+						  if(deltaR < 2.0 )
 						    {
 						      fillHist("6_dyll",  Tau1Index, Tau2Index, false, event_weight);
 						    }
-
+						  if( (my_tau1P4 + my_tau2P4).M() < 100 )
+						    {
+						      fillHist("7_dyll",  Tau1Index, Tau2Index, false, event_weight);
+						    }
 						  
 						}
 					    }
@@ -308,7 +311,7 @@ void tautau_analyzer::Loop(Long64_t maxEvents, int reportEvery, string SampleNam
       if(metFilters==0)
 	{
 	  if(debug)cout<<"metfilters selected"<<endl;
-	  if (is_MC) fabs(genWeight) > 0.0 ? event_weight *= genWeight/fabs(genWeight) : event_weight = 0;
+	  //if (is_MC) fabs(genWeight) > 0.0 ? event_weight *= genWeight/fabs(genWeight) : event_weight = 0;
 	  nMETFiltersPassed+=event_weight;
 	  //makeTestPlot("a", 0,0,0,event_weight);
 	  if(debug)cout<<"genweight applied"<<endl;
@@ -408,9 +411,13 @@ void tautau_analyzer::Loop(Long64_t maxEvents, int reportEvery, string SampleNam
 						    
 						  }
 
-						if(deltaR > 2.0 )
+						if(deltaR < 2.0 )
 						  {
 						    fillHist("6",  Tau1Index, Tau2Index, false, event_weight);
+						  }
+						if( (my_tau1P4 + my_tau2P4).M() < 100 )
+						  {
+						    fillHist("7",  Tau1Index, Tau2Index, false, event_weight);
 						  }
 					      }
 					  }
@@ -557,10 +564,14 @@ void tautau_analyzer::Loop(Long64_t maxEvents, int reportEvery, string SampleNam
 						fillHist("5_fr", Tau1Index, Tau2Index, true, event_weight);
 						//double mT_tauMet = TMass_F(my_tau2P4.Pt(),my_tau2P4.Phi(), my_metP4.Pt(), my_metP4.Phi() );
 						
-						if(deltaR > 2.0 )
+						if(deltaR < 2.0 )
                                                   {
                                                     fillHist("6_fr",  Tau1Index, Tau2Index, true, event_weight);
                                                   }
+						if( (my_tau1P4 + my_tau2P4).M() < 100 )
+						  {
+						    fillHist("7_fr",  Tau1Index, Tau2Index, true, event_weight);
+						  }
 					      }
 					  }
 					}
@@ -718,15 +729,19 @@ std::vector<int> tautau_analyzer::getEleCand(double elePtCut, double eleEtaCut){
 std::vector<int> tautau_analyzer::getTauCand_noID(double tauPtCut, double tauEtaCut){
   std::vector<int> tmpCand;
   tmpCand.clear();
-  TLorentzVector dau2;
+  
   //Loop over taus      
   for(int iTau=0;iTau<nTau;iTau++)
     {
-      dau2.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
+      TLorentzVector tauP4;
+      TLorentzVector tauP4_corr;
+      tauP4.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
 			,tau_Phi->at(iTau), tau_Energy->at(iTau)
 			);
       if(is_MC)
-	applyTauESCorrections(dau2, iTau, dau2);
+	applyTauESCorrections(tauP4, iTau, tauP4_corr);
+      else
+        tauP4_corr = tauP4;
       bool kinematic = false;
       bool tauId = false;
       bool decayModeCut = false;
@@ -735,8 +750,8 @@ std::vector<int> tautau_analyzer::getTauCand_noID(double tauPtCut, double tauEta
       bool newDecayModeFinding=false;
       bool tau_reject=false;
       bool trigger = false;
-      if( dau2.Pt() > tauPtCut 
-	  && fabs( dau2.Eta() )< tauEtaCut 
+      if( tauP4_corr.Pt() > tauPtCut 
+	  && fabs( tauP4_corr.Eta() )< tauEtaCut 
 	  && tau_LeadChargedHadron_dz->at(iTau) < 0.2
 	  && fabs(tau_Charge->at(iTau))==1
 	  )kinematic = true;
@@ -745,11 +760,11 @@ std::vector<int> tautau_analyzer::getTauCand_noID(double tauPtCut, double tauEta
       if( tau_byVVVLooseDeepTau2017v2p1VSe->at(iTau)==1 && tau_byVLooseDeepTau2017v2p1VSmu->at(iTau)==1)tau_reject=true;
       if( tau_IDbits->at(iTau)>>1&1==1 ) newDecayModeFinding=true;
       
-      if( kinematic==true    
-	  && decayModeCut==true   
-	  && tau_reject==true   
-	  && newDecayModeFinding==true
-	  //&& tauIsolation==true
+      if( kinematic
+	  && decayModeCut
+	  && tau_reject
+	  && newDecayModeFinding
+	  //&& tauIsolation
 	  )
 	{
 	  tmpCand.push_back(iTau);
@@ -828,15 +843,19 @@ void tautau_analyzer::assignTauIndices(vector<int> tauIndices , int& tau1 , int&
 std::vector<int> tautau_analyzer::getTauCand(double tauPtCut, double tauEtaCut){
   std::vector<int> tmpCand;
   tmpCand.clear();
-  TLorentzVector dau2;
+  
   //Loop over taus      
   for(int iTau=0;iTau<nTau;iTau++)
     {
-      dau2.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
+      TLorentzVector tauP4;
+      TLorentzVector tauP4_corr;
+      tauP4.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
 			,tau_Phi->at(iTau), tau_Energy->at(iTau)
 			);
       if(is_MC)
-	applyTauESCorrections(dau2, iTau, dau2);
+	applyTauESCorrections(tauP4, iTau, tauP4_corr);
+      else
+        tauP4_corr = tauP4;
       bool kinematic = false;
       bool tauId = false;
       bool decayModeCut = false;
@@ -845,8 +864,8 @@ std::vector<int> tautau_analyzer::getTauCand(double tauPtCut, double tauEtaCut){
       bool newDecayModeFinding=false;
       bool tau_reject=false;
       bool trigger = false;
-      if( dau2.Pt() > tauPtCut 
-	  && fabs( dau2.Eta() )< tauEtaCut 
+      if( tauP4_corr.Pt() > tauPtCut 
+	  && fabs( tauP4_corr.Eta() )< tauEtaCut 
 	  && tau_LeadChargedHadron_dz->at(iTau) < 0.2
 	  && fabs(tau_Charge->at(iTau))==1
 	  )kinematic = true;
@@ -855,11 +874,11 @@ std::vector<int> tautau_analyzer::getTauCand(double tauPtCut, double tauEtaCut){
       if( tau_byVVVLooseDeepTau2017v2p1VSe->at(iTau)==1 && tau_byVLooseDeepTau2017v2p1VSmu->at(iTau)==1)tau_reject=true;
       if( tau_IDbits->at(iTau)>>1&1==1 ) newDecayModeFinding=true;
 
-      if( kinematic==true    
-	  && decayModeCut==true   
-	  && tauIsolation==true 
-	  && tau_reject==true   
-	  && newDecayModeFinding==true
+      if( kinematic
+	  && decayModeCut
+	  && tauIsolation
+	  && tau_reject
+	  && newDecayModeFinding
 	  )
 	{
 	  tmpCand.push_back(iTau);
@@ -883,15 +902,17 @@ std::vector<int> tautau_analyzer::getTauCand(double tauPtCut, double tauEtaCut){
 }
 std::vector<int> tautau_analyzer::getAISRTauCand(double tauPtCut, double tauEtaCut){
   std::vector<int> tmpCand;  tmpCand.clear();
-  TLorentzVector dau2;
+  
   
   for(int iTau=0;iTau<nTau;iTau++) //Loop over taus
     {
-      dau2.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
-                        ,tau_Phi->at(iTau), tau_Energy->at(iTau)
-                        );
+      TLorentzVector tauP4;
+      TLorentzVector tauP4_corr;
+      tauP4.SetPtEtaPhiE(tau_Pt->at(iTau),tau_Eta->at(iTau)
+			 ,tau_Phi->at(iTau), tau_Energy->at(iTau)
+			 );
       if(is_MC)
-	applyTauESCorrections(dau2, iTau, dau2);
+	applyTauESCorrections(tauP4, iTau, tauP4_corr);
       bool kinematic = false;
       bool tauId = false;
       bool decayModeCut = false;
@@ -900,8 +921,8 @@ std::vector<int> tautau_analyzer::getAISRTauCand(double tauPtCut, double tauEtaC
       bool newDecayModeFinding=false;
       bool tau_reject=false;
       bool trigger = false;
-      if( dau2.Pt() > tauPtCut
-          && fabs( dau2.Eta() )< tauEtaCut
+      if( tauP4_corr.Pt() > tauPtCut
+          && fabs( tauP4_corr.Eta() )< tauEtaCut
           && tau_LeadChargedHadron_dz->at(iTau) < 0.2
           && fabs(tau_Charge->at(iTau))==1
           )kinematic = true;

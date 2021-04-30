@@ -1866,7 +1866,7 @@ void tautau_analyzer::setMyEleTau(int tau1Index, int tau2Index){
       my_tau2P4=my_tau2P4*1.026;
     if ( (my_genmatching_l2==2 || my_genmatching_l2==4) && tau2dm==0) my_tau2P4=my_tau2P4*0.998;
     else if ( (my_genmatching_l2==2 || my_genmatching_l2==4) && tau2dm==1) my_tau2P4=my_tau2P4*0.990;
-    if ( tau2dm == 0 ) my_tau2P4.SetPtEtaPhiM(my_tau2P4.Pt(), my_tau2P4.Eta(), my_tau2P4.Phi(), 0.1349766);
+    //if ( tau2dm == 0 ) my_tau2P4.SetPtEtaPhiM(my_tau2P4.Pt(), my_tau2P4.Eta(), my_tau2P4.Phi(), 0.1349766);
   }
   if(is_MC){
     if (my_genmatching_l1>=5) my_tau1P4=my_tau1P4*get_BinContent( h_tauesSF, tau2dm);
@@ -1879,7 +1879,7 @@ void tautau_analyzer::setMyEleTau(int tau1Index, int tau2Index){
       my_tau1P4=my_tau1P4*1.026;
     if ( (my_genmatching_l1==2 || my_genmatching_l1==4) && tau2dm==0) my_tau1P4=my_tau1P4*0.998;
     else if ( (my_genmatching_l2==2 || my_genmatching_l2==4) && tau2dm==1) my_tau1P4=my_tau1P4*0.990;
-    if ( tau1dm == 0 ) my_tau1P4.SetPtEtaPhiM(my_tau1P4.Pt(), my_tau1P4.Eta(), my_tau1P4.Phi(), 0.1349766);
+    //if ( tau1dm == 0 ) my_tau1P4.SetPtEtaPhiM(my_tau1P4.Pt(), my_tau1P4.Eta(), my_tau1P4.Phi(), 0.1349766);
   }
   
   corrected_met = uncorrectedMetPlusTau - my_tau1P4 - my_tau2P4;
