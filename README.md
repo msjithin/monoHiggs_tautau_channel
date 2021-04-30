@@ -9,14 +9,14 @@ To analyse 2018 tautau channel with monoHiggs samples:
    Main script is tautau_analyzer.C
    sf_files need to be in this directory or keep a link
    To run locally for testing:
-   ```sh
+   ```
       bash runAnalyzer.sh
-   ```sh
+   ```
    
    To submit on condor:
-   ```sh
+   ```
       bash submit.sh 
-   ```sh
+   ```
 
 2. To make plots:
 
@@ -24,6 +24,6 @@ To analyse 2018 tautau channel with monoHiggs samples:
    File copyFiles.sh needs to be edited to copy finished files from Condor submit in previous step.
    
    To make plots (this hadd the files, apply xsec weights and make plots)
-   ```sh
+   ```
    bash execute_all.sh  
-   ```sh
+   ```
