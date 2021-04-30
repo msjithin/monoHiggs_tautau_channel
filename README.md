@@ -21,9 +21,9 @@ To analyse 2018 tautau channel with monoHiggs samples:
 2. To make plots:
 
    Go to tautaupost_analyzer/   \
-   File copyFiles.sh needs to be edited to copy finished files from Condor submit in previous step.  \
+   File copyFiles.sh needs to be edited to copy finished files from Condor submit in previous step.  
    
-   To make plots (this hadd the files, apply xsec weights and make plots)  \
+   To make plots (this hadd the files, apply xsec weights and make plots)  
    ```
    bash execute_all.sh  
    ```
