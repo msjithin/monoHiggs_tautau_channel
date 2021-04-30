@@ -4,10 +4,10 @@
 To analyse 2018 tautau channel with monoHiggs samples:
 
 
-1. Go to 2018_skim/tautauh/analyzer
-   Scripts are saved in directory src/
-   Main script is tautau_analyzer.C
-   sf_files need to be in this directory or keep a link
+1. Go to 2018_skim/tautauh/analyzer .
+   Scripts are saved in directory src/ .
+   Main script is tautau_analyzer.C .
+   sf_files need to be in this directory or keep a link .
    To run locally for testing:
    ```
       bash runAnalyzer.sh
