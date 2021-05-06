@@ -126,81 +126,109 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
        nb = fChain->GetEntry(jentry);   nbytes += nb;
        int report_i=0;
        
-
-       // if ( Flag_BadPFMuonFilter ///
-       // 	    || Flag_EcalDeadCellTriggerPrimitiveFilter  ///
-       // 	    || Flag_HBHENoiseFilter /////
-       // 	    || Flag_HBHENoiseIsoFilter  ///
-       // 	    || Flag_ecalBadCalibReducedMINIAODFilter  ///
-       // 	    || Flag_globalSuperTightHalo2016Filter  ////
-       // 	    || Flag_goodVertices   /////
-       // 	    ) continue;
-       if ( Flag_BadChargedCandidateFilter 
-       	    || Flag_BadPFMuonFilter ///
-       	    || Flag_EcalDeadCellTriggerPrimitiveFilter  ///
-       	    || Flag_HBHENoiseFilter /////
-       	    || Flag_HBHENoiseIsoFilter  ///
-       	    || Flag_ecalBadCalibReducedMINIAODFilter  ///
-       	    || Flag_badMuons 
-       	    || Flag_duplicateMuons 
-       	    || Flag_ecalBadCalibFilter 
-       	    || Flag_eeBadScFilter 
-       	    || Flag_globalSuperTightHalo2016Filter  ////
-       	    || Flag_goodVertices   /////
-       	    ) continue;
-
-       bool tauPt_selection = (t1Pt>40 && t2Pt>40 && abs(t1Eta)<2.1 && abs(t2Eta)<2.1 );
+       // if(is_MC)
+       // 	 {
+       // 	   if ( Flag_goodVertices
+       // 		|| Flag_globalSuperTightHalo2016Filter
+       // 		|| Flag_HBHENoiseFilter
+       // 		|| Flag_HBHENoiseIsoFilter
+       // 		|| Flag_EcalDeadCellTriggerPrimitiveFilter
+       // 		|| Flag_badMuons
+       // 		|| Flag_BadPFMuonFilter
+       // 		|| Flag_ecalBadCalibReducedMINIAODFilter
+       // 		|| Flag_ecalBadCalibFilter
+       // 		||Flag_eeBadScFilter
+       // 		) continue;
+       // 	 }
+       if(is_MC)
+         {	  
+	   if ( Flag_BadChargedCandidateFilter 
+		|| Flag_BadPFMuonFilter ///
+		|| Flag_EcalDeadCellTriggerPrimitiveFilter  ///
+		|| Flag_HBHENoiseFilter /////
+		|| Flag_HBHENoiseIsoFilter  ///
+		|| Flag_ecalBadCalibReducedMINIAODFilter  ///
+		|| Flag_badMuons 
+		|| Flag_duplicateMuons 
+		|| Flag_ecalBadCalibFilter 
+		|| Flag_eeBadScFilter 
+		|| Flag_globalSuperTightHalo2016Filter  ////
+		|| Flag_goodVertices   /////
+		) continue;
+	 }
        bool trigger = false;
        double  applySf=1.0;
        //if( run < 317509 )
        bool trigger_doubleHPS40 = ( DoubleMediumHPSTau40Pass
 				    && run >= 317509
-				    // && t1MatchesDoubleMediumHPSTau40Path
-				    // && t2MatchesDoubleMediumHPSTau40Path
-				    // && t1MatchesDoubleMediumHPSTau40Filter
-				    // && t2MatchesDoubleMediumHPSTau40Filter
 				    );
        bool trigger_doubleTight35 = (DoubleTightTau35TightIDPass 
 				     && run < 317509
-				     // && t1MatchesDoubleTightTau35Path
-				     // && t2MatchesDoubleTightTau35Path
-				     // && t1MatchesDoubleTightTau35Filter
-				     // && t2MatchesDoubleTightTau35Filter
 				     );      
        bool trigger_doubleMedium40 = (DoubleMediumTau40TightIDPass
 				      && run < 317509
-				      // && t1MatchesDoubleMediumTau40Path
-				      // && t2MatchesDoubleMediumTau40Path
-				      // && t1MatchesDoubleMediumTau40Filter
-				      // && t2MatchesDoubleMediumTau40Filter
 				      );
        bool trigger_doubleTight40 = (DoubleTightTau40Pass
-				     // && run < 317509
-				     // && t1MatchesDoubleTightTau40Path
-				     // && t2MatchesDoubleTightTau40Path
-				     // && t1MatchesDoubleTightTau40Filter
-				     // && t2MatchesDoubleTightTau40Filter
 				     );
-       // if(isMC)
-       // 	 if (! (t1DecayModeFinding > 0.5 &&  t2DecayModeFinding > 0.5 && t1ZTTGenMatching>=5 && t2ZTTGenMatching>=5 )) continue;
+       
+       bool trigger_doubleHPS40_match = ( DoubleMediumHPSTau40Pass
+					  //&& run >= 317509
+					  && t1MatchesDoubleMediumHPSTau40Path
+					  && t2MatchesDoubleMediumHPSTau40Path
+					  && t1MatchesDoubleMediumHPSTau40Filter
+					  && t2MatchesDoubleMediumHPSTau40Filter
+					  );
+       bool trigger_doubleTight35_match = (DoubleTightTau35TightIDPass 
+					   //&& run < 317509
+					   //&& !is_MC
+					   && t1MatchesDoubleTightTau35Path
+					   && t2MatchesDoubleTightTau35Path
+					   && t1MatchesDoubleTightTau35Filter
+					   && t2MatchesDoubleTightTau35Filter
+					   );      
+       bool trigger_doubleMedium40_match = (DoubleMediumTau40TightIDPass
+					    //&& run < 317509
+					    //&& !is_MC
+					    && t1MatchesDoubleMediumTau40Path
+					    && t2MatchesDoubleMediumTau40Path
+					    && t1MatchesDoubleMediumTau40Filter
+					    && t2MatchesDoubleMediumTau40Filter
+					    );
+       bool trigger_doubleTight40_match = (DoubleTightTau40Pass
+					   //&& run < 317509
+					   //&& !is_MC
+					   && t1MatchesDoubleTightTau40Path
+					   && t2MatchesDoubleTightTau40Path
+					   && t1MatchesDoubleTightTau40Filter
+					   && t2MatchesDoubleTightTau40Filter
+					   );
        
        if ( trigger_doubleHPS40 
 	    || trigger_doubleTight35 
 	    || trigger_doubleMedium40 
 	    || trigger_doubleTight40 )
 	 trigger = true;
-       
-       
+       if(is_MC)
+	 {
+	   if(! (trigger_doubleHPS40_match || trigger_doubleTight35_match || trigger_doubleMedium40_match || trigger_doubleTight40_match) ) continue;
+	 }
+	   
+       tau1P4.SetPtEtaPhiM(t1Pt, t1Eta, t1Phi, t1Mass);
+       tau2P4.SetPtEtaPhiM(t2Pt, t2Eta, t2Phi, t2Mass);
+       metP4.SetPtEtaPhiM(type1_pfMetEt,0,type1_pfMetPhi,0);
+       if(is_MC)
+	 {
+	   applyTauESCorrections(tau1P4, t1ZTTGenMatching, t1DecayMode, tau1P4);
+	   applyTauESCorrections(tau2P4, t2ZTTGenMatching, t2DecayMode, tau2P4);
+	 }
+       if(is_MC)
+	 {  if( t1DecayModeFinding < 0.5 || t2DecayModeFinding < 0.5 ) continue;  }
+
+       // cout<<t1Pt <<" "<<t1Eta<<" "<< t1Phi<<" "<< t1Mass<<" "<<endl;
+       // cout<<tau1P4.Pt() <<" "<<tau1P4.Eta()<<" "<< tau1P4.Phi()<<" "<< tau1P4.M()<<"  \n"<<endl;
        if( trigger )
 	 {
 	   //makeMyPlot("b", 0, 0, eventWeight);
-	   TLorentzVector mytau2; 
-	   mytau2.SetPtEtaPhiM(t2Pt, t2Eta, t2Phi, t2Mass);
-	   TLorentzVector mytau1;
-	   mytau1.SetPtEtaPhiM(t1Pt, t1Eta, t1Phi, t1Mass);
-	   TLorentzVector my_metP4;
-	   my_metP4.SetPtEtaPhiM(type1_pfMetEt,0,type1_pfMetPhi,0);
-
 	   
 	   int mydm1=t1DecayMode;
 	   int mydm2=t2DecayMode;
@@ -211,9 +239,12 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 	   float iso2=(t2MediumDeepTau2017v2p1VSjet);
 	   float iso1=(t1MediumDeepTau2017v2p1VSjet);
 	   
+	   // if(is_MC)
+	   //   if(! (t1ZTTGenMatching>=5 && t1ZTTGenMatching>=5))
+	   //     continue;
 	   //cout<< antiisoRegion <<" "<< byVVVLooseDeepVSjet_1 <<" "<< byMediumDeepVSjet_1 <<endl;
 	   eventWeight = 1.0;
-	   if(mytau1.Pt()>40 && fabs(mytau1.Eta())<2.1 && iso1>0.5
+	   if(tau1P4.Pt()>40 && fabs(tau1P4.Eta())<2.1 && iso1>0.5
 	      && abs(t1PVDZ)< 0.2
 	      && t1VVVLooseDeepTau2017v2p1VSe>0.5 && t1VLooseDeepTau2017v2p1VSmu>0.5
 	      && (mydm1==0 || mydm1==1 || mydm1==10 || mydm1==11)
@@ -223,7 +254,7 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 	     {
 	       //makeMyPlot("c", 0, 0, eventWeight);
 	       // selct taus
-	       if(mytau2.Pt()>40 && fabs(mytau2.Eta())<2.1 && iso2>0.5
+	       if(tau2P4.Pt()>40 && fabs(tau2P4.Eta())<2.1 && iso2>0.5
 		  && abs(t2PVDZ)< 0.2 
 		  && t2VVVLooseDeepTau2017v2p1VSe>0.5 && t2VLooseDeepTau2017v2p1VSmu>0.5
 		  && (mydm2==0 || mydm2==1 || mydm2==10 || mydm2==11)
@@ -231,7 +262,7 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 		  //&& t2DecayModeFinding > 0.5
 		  )
 		 {
-		   //cout<<mytau1.Pt() <<" "<<mytau2.Pt()<<endl;
+		   //cout<<tau1P4.Pt() <<" "<<tau2P4.Pt()<<endl;
 		   makeMyPlot("d", 0, 0, eventWeight);
 		   if( t1Charge * t2Charge < 0 )
 		     {
@@ -245,10 +276,10 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 			   //makeMyPlot("g", 0, 0, eventWeight);
 			   applySf=1.0;
 			   if(is_MC)
-			     applySf=  getScaleFactors( mytau1.Pt(),
-							mytau2.Pt(),
-							mytau1.Eta(),
-							mytau2.Eta(),
+			     applySf=  getScaleFactors( tau1P4.Pt(),
+							tau2P4.Pt(),
+							tau1P4.Eta(),
+							tau2P4.Eta(),
 							mydm1,
 							t1ZTTGenMatching,
 							false  /// this is set to true for fake bakground
@@ -261,12 +292,12 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 			     makeMyPlot("4", 0, 0, eventWeight);
 			     
 			     //dr cut
-			     double dr_etau=mytau1.DeltaR(mytau2);
+			     double dr_etau=tau1P4.DeltaR(tau2P4);
 			     if(dr_etau>0.5)
 			       {
 				 makeMyPlot("5", 0, 0, eventWeight);
 				 reorder = 0;
-				 if (mytau1.Pt() < mytau2.Pt() )
+				 if (tau1P4.Pt() < tau2P4.Pt() )
 				   reorder = 1;
 				 plotFill("checkOrder",  reorder ,  4, 0, 2, eventWeight);
 				 
@@ -276,15 +307,15 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 				 plotFill("tau1rawiso", t1DeepTau2017v2p1VSjetraw, 20, 0, 1,  eventWeight);
 				 
 				 
-				 plotFill("mvis_comparison",  (mytau1+mytau2).M() ,  10, mvis_Bins, eventWeight);
-				 plotFill("mvis_inc",  (mytau1+mytau2).M() ,  9, mvis_Bins_0jet, eventWeight);
-				 plotFill("mt_inc", TMass_F( mytau1.Pt(),mytau1.Phi(), type1_pfMetEt,type1_pfMetPhi) ,  9, mvis_Bins_0jet, eventWeight);
-				 plotFill("mtTot_inc", (mytau2+mytau1+my_metP4).M() ,  9, mvis_Bins_0jet, eventWeight);
+				 plotFill("mvis_comparison",  (tau1P4+tau2P4).M() ,  10, mvis_Bins, eventWeight);
+				 plotFill("mvis_inc",  (tau1P4+tau2P4).M() ,  9, mvis_Bins_0jet, eventWeight);
+				 plotFill("mt_inc", TMass_F( tau1P4.Pt(),tau1P4.Phi(), type1_pfMetEt,type1_pfMetPhi) ,  9, mvis_Bins_0jet, eventWeight);
+				 plotFill("mtTot_inc", (tau2P4+tau1P4+metP4).M() ,  9, mvis_Bins_0jet, eventWeight);
 				 if(jetVeto30==0)
 				   {
-				     plotFill("mvis_0jet",  (mytau1+mytau2).M() ,  9, mvis_Bins_0jet, eventWeight);
-				     plotFill("mt_0jet", TMass_F( mytau1.Pt(),mytau1.Phi(), type1_pfMetEt,type1_pfMetPhi) ,  9, mvis_Bins_0jet, eventWeight);
-				     plotFill("mtTot_0jet", (mytau2+mytau1+my_metP4).M() ,  9, mvis_Bins_0jet, eventWeight);
+				     plotFill("mvis_0jet",  (tau1P4+tau2P4).M() ,  9, mvis_Bins_0jet, eventWeight);
+				     plotFill("mt_0jet", TMass_F( tau1P4.Pt(),tau1P4.Phi(), type1_pfMetEt,type1_pfMetPhi) ,  9, mvis_Bins_0jet, eventWeight);
+				     plotFill("mtTot_0jet", (tau2P4+tau1P4+metP4).M() ,  9, mvis_Bins_0jet, eventWeight);
 				   }
 			       }
 			   }
@@ -295,7 +326,7 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 		 }
 	     }
 	   eventWeight = 1.0; 
-	   if(mytau1.Pt()>40 && fabs(mytau1.Eta())<2.1 && antiisoRegion
+	   if(tau1P4.Pt()>40 && fabs(tau1P4.Eta())<2.1 && antiisoRegion
 	      && abs(t1PVDZ)< 0.2
 	      && t1VVVLooseDeepTau2017v2p1VSe>0.5 && t1VLooseDeepTau2017v2p1VSmu>0.5
 	      && (mydm1==0 || mydm1==1 || mydm1==10 || mydm1==11)
@@ -305,7 +336,7 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 	     {
 	       //makeMyPlot("fc",0, 0, eventWeight);
 	       // selct taus
-	       if(mytau2.Pt()>40 && fabs(mytau2.Eta())<2.1 && iso2>0.5
+	       if(tau2P4.Pt()>40 && fabs(tau2P4.Eta())<2.1 && iso2>0.5
 		  && abs(t2PVDZ)< 0.2
 		  && t2VVVLooseDeepTau2017v2p1VSe>0.5 && t2VLooseDeepTau2017v2p1VSmu>0.5
 		  && (mydm2==0 || mydm2==1 || mydm2==10 || mydm2==11)		  
@@ -320,13 +351,13 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 		       //makeMyPlot("fe",0, 0, eventWeight);
 		       // match filers
 		       makeMyPlot("3_fr",0, 0, eventWeight);
-		       double mt=TMass_F(mytau2.Pt(),mytau2.Phi()
-					 ,my_metP4.Pt(), my_metP4.Phi());
-		       double mvis=(mytau1+ mytau2).M();
+		       double mt=TMass_F(tau2P4.Pt(),tau2P4.Phi()
+					 ,metP4.Pt(), metP4.Phi());
+		       double mvis=(tau1P4+ tau2P4).M();
 		       
 		       double newFF = 1.0;
-		       newFF = FF_weights_withlpt.get_ff( mytau1.Pt(), mt, mvis
-							  , 0 , mytau2.Pt(), my_metP4.Pt()
+		       newFF = FF_weights_withlpt.get_ff( tau1P4.Pt(), mt, mvis
+							  , 0 , tau2P4.Pt(), metP4.Pt()
 							  , jetVeto30, 0
 							  , 0, 0 , 0
 							  , TString(" "));
@@ -338,15 +369,15 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 			 {
 			   applySf=1.0;
 			   if(is_MC)
-			     applySf=  getScaleFactors( mytau1.Pt(),
-							mytau2.Pt(),
-							mytau1.Eta(),
-							mytau2.Eta(),
+			     applySf=  getScaleFactors( tau1P4.Pt(),
+							tau2P4.Pt(),
+							tau1P4.Eta(),
+							tau2P4.Eta(),
 							mydm1,
 							t1ZTTGenMatching,
 							true  /// this is set to true for fake bakground
 							);
-				   
+			   
 			   //cout<<" sf : "<< applySf <<endl;
 			   eventWeight = eventWeight * applySf;
 
@@ -355,14 +386,14 @@ void smhtt_2018::Loop(Long64_t maxEvents, int reportEvery, string SampleName, st
 			     makeMyPlot("4_fr",0, 0, eventWeight);
 				
 			     //dr cut
-			     double dr_etau=mytau1.DeltaR(mytau2);
+			     double dr_etau=tau1P4.DeltaR(tau2P4);
 			     if(dr_etau>0.5)
 			       {
 				 makeMyPlot("5_fr",0, 0, eventWeight);
 				 plotFill("tauIso1_aisr",  antiisoRegion ,  4, 0, 2, eventWeight);
 				 plotFill("tauIso2_aisr",  iso2 ,  4, 0, 2, eventWeight);
 				 reorder = 0;
-				 if (mytau1.Pt() < mytau2.Pt() )
+				 if (tau1P4.Pt() < tau2P4.Pt() )
 				   reorder = 1;
 				 plotFill("checkOrder_fr",  reorder ,  4, 0, 2, eventWeight);
 				 plotFill("tau1rawiso", t1DeepTau2017v2p1VSjetraw, 20, 0, 1,  eventWeight);
@@ -461,11 +492,11 @@ void smhtt_2018::makeMyPlot( string histNumber , int tau1Index, int tau2Index, f
     tau2Index=tau2Index;
   else
     tau2Index=0;
-  plotFill("tau1Pt_"+hNumber,  t1Pt , 30 , 40 , 180,  event_weight);
+  plotFill("tau1Pt_"+hNumber,  tau1P4.Pt() , 30 , 40 , 180,  event_weight);
   plotFill("tau1Eta_"+hNumber, t1Eta, 22, -2.1, 2.1,  event_weight);
   plotFill("tau1Phi_"+hNumber, t1Phi, 30, -3.14, 3.14,  event_weight);
 
-  plotFill("tau2Pt_"+hNumber,  t2Pt  , 30 , 40 , 120,  event_weight);
+  plotFill("tau2Pt_"+hNumber,  tau2P4.Pt()  , 30 , 40 , 120,  event_weight);
   plotFill("tau2Eta_"+hNumber, t2Eta , 22, -2.1, 2.1, event_weight);
   plotFill("tau2Phi_"+hNumber, t2Phi , 30, -3.14, 3.14,  event_weight);
   
@@ -501,33 +532,31 @@ void smhtt_2018::makeMyPlot( string histNumber , int tau1Index, int tau2Index, f
   if(triggerBin4>0)
     plotFill("trigger_"+hNumber, triggerBin4 , 5, 0, 5,  event_weight);
   
-  plotFill("mass1_"+hNumber, t1Mass , 50, 0, 0.05,  event_weight);
-  plotFill("mass2_"+hNumber, t2Mass , 25, 0, 2.5,  event_weight);
+  plotFill("mass1_"+hNumber, tau1P4.M() , 25, 0, 2.5,  event_weight);
+  plotFill("mass2_"+hNumber, tau2P4.M() , 25, 0, 2.5,  event_weight);
   
   plotFill("genmatch1_"+hNumber, t1ZTTGenMatching , 7, 0, 7,  event_weight);
   plotFill("genmatch2_"+hNumber, t2ZTTGenMatching , 7, 0, 7,  event_weight);
 
-  TLorentzVector my_tau2P4;
-  my_tau2P4.SetPtEtaPhiM(t2Pt, t2Eta, t2Phi, t2Mass);
-  TLorentzVector my_tau1P4;
-  my_tau1P4.SetPtEtaPhiM(t1Pt, t1Eta, t1Phi, t1Mass);
-  TLorentzVector my_metP4;
-  my_metP4.SetPtEtaPhiM(type1_pfMetEt,0,type1_pfMetPhi,0);
-
+  
   double deltaPhi = DeltaPhi(t1Phi, t2Phi);
-  double deltaEta = fabs(my_tau1P4.Eta() - my_tau2P4.Eta());
+  double deltaEta = fabs(tau1P4.Eta() - tau2P4.Eta());
   plotFill("deltaPhi_"+hNumber, deltaPhi , 30, -3.14, 3.14,  event_weight);
   plotFill("deltaEta_"+hNumber, deltaEta ,  25, -2.5, 2.5,  event_weight);
-  double deltaR = my_tau1P4.DeltaR(my_tau2P4);
+  double deltaR = tau1P4.DeltaR(tau2P4);
   plotFill("deltaR_"+hNumber, deltaR , 30, 0, 6,  event_weight);
 
-  double vismass = (my_tau1P4 + my_tau2P4).M();
+  double vismass = (tau1P4 + tau2P4).M();
   plotFill("visMass_"+hNumber, vismass,  30, 0, 300,  event_weight);
-  double higgsPt = pTvecsum_F(my_tau1P4, my_tau2P4, my_metP4);
+
+  plotFill("t1t2Mass_"+hNumber, t1_t2_Mass,  30, 0, 300,  event_weight);
+
+
+  double higgsPt = pTvecsum_F(tau1P4, tau2P4, metP4);
   plotFill("higgsPt_"+hNumber, higgsPt ,  30, 0, 230,  event_weight);
-  plotFill("met_"+hNumber, my_metP4.Pt() , 30, 0, 150,  event_weight);
-  plotFill("metPhi_"+hNumber, my_metP4.Phi() , 30, -3.14, 3.14,  event_weight);
-  double mT_eleMet = TMass_F( my_tau1P4.Pt(),my_tau1P4.Phi(),my_metP4.Pt(), my_metP4.Phi()  );
+  plotFill("met_"+hNumber, metP4.Pt() , 30, 0, 150,  event_weight);
+  plotFill("metPhi_"+hNumber, metP4.Phi() , 30, -3.14, 3.14,  event_weight);
+  double mT_eleMet = TMass_F( tau1P4.Pt(),tau1P4.Phi(),metP4.Pt(), metP4.Phi()  );
   plotFill("mT_eMet_"+hNumber,  mT_eleMet , 30, 0, 150, event_weight);
   int nEvent=1;
   plotFill("nEvents_"+hNumber, nEvent , 3, 0.0, 3.0,  event_weight);
@@ -539,6 +568,7 @@ void smhtt_2018::makeMyPlot( string histNumber , int tau1Index, int tau2Index, f
 
 double smhtt_2018::getScaleFactors(  double tau1pt, double tau2pt, double tau1eta, double tau2eta, int taudm, int tau1GenMatch, bool isFakebkg)
 {
+  
   bool debug=false;
   double rv_sf=1.0;
   double sf_tauTrg = 1.0; double sf_tauTrg_vvvloose=1.0;
@@ -550,26 +580,20 @@ double smhtt_2018::getScaleFactors(  double tau1pt, double tau2pt, double tau1et
   double sf_taufesSF = 1.0;
   
   
-  if(  t1ZTTGenMatching==5 )
+  //if(  t1ZTTGenMatching==5 )
     {
       sf_tau1idSF_m = get_BinContent( h_tauidSF_m, t1DecayMode) ;
       //sf_tau1idSF_m = fn_tauIDSF_m->Eval(tau1pt) ;
       sf_tau1idSF_vvvl = get_BinContent( h_tauidSF_vvvl, t1DecayMode);
     }
-  if(  t2ZTTGenMatching==5 )
+    //if(  t2ZTTGenMatching==5 )
     {
       sf_tau2idSF_m = get_BinContent( h_tauidSF_m, t2DecayMode) ;
       //sf_tau2idSF_m = fn_tauIDSF_m->Eval(tau2pt) ;
       sf_tau2idSF_vvvl = get_BinContent( h_tauidSF_vvvl, t2DecayMode);
     }
-  TLorentzVector mytau2; 
-  mytau2.SetPtEtaPhiM(t2Pt, t2Eta, t2Phi, t2Mass);
-  TLorentzVector mytau1;
-  mytau1.SetPtEtaPhiM(t1Pt, t1Eta, t1Phi, t1Mass);
-  TLorentzVector my_metP4;
-  my_metP4.SetPtEtaPhiM(type1_pfMetEt,0,type1_pfMetPhi,0);
-
-  double higgsPt = pTvecsum_F(mytau2, mytau1, my_metP4);
+  
+  double higgsPt = pTvecsum_F(tau2P4, tau1P4, metP4);
   double higgPt_weight=1.0;
   if (jetVeto30==0)
     higgPt_weight = gr_NNLOPSratio_pt_mcatnlo_0jet->Eval(min(higgsPt,125.0));
@@ -591,23 +615,23 @@ double smhtt_2018::getScaleFactors(  double tau1pt, double tau2pt, double tau1et
   // else if ( tau2pt < 20 )  tau2PtCheck = 20;
 
   sf_tauTrg = TriggerSF_med.get_sf(t1DecayMode, tau1pt) * TriggerSF_med.get_sf(t2DecayMode, tau2pt);
-  if(isFakebkg)
-    sf_tauTrg = TriggerSF_vvvl.get_sf(t1DecayMode, tau1pt) * TriggerSF_med.get_sf(t2DecayMode, tau2pt);
+  //if(isFakebkg)
+  //  sf_tauTrg = TriggerSF_vvvl.get_sf(t1DecayMode, tau1pt) * TriggerSF_med.get_sf(t2DecayMode, tau2pt);
   
   sf_fakeEleMu = eleMuSF(t1ZTTGenMatching, tau1eta) * eleMuSF(t2ZTTGenMatching, tau2eta);
 
   //// tau trigger, id scale factors from RooWorkspace
-  w->var("t_pt")->setVal(mytau1.Pt());
-  w->var("t_eta")->setVal(mytau1.Eta());
-  w->var("t_phi")->setVal(mytau1.Phi());
+  w->var("t_pt")->setVal(tau1P4.Pt());
+  w->var("t_eta")->setVal(tau1P4.Eta());
+  w->var("t_phi")->setVal(tau1P4.Phi());
   w->var("t_dm")->setVal(t1DecayMode);
   double t1_deeptauid = w->function("t_deeptauid_dm_medium")->getVal();
   double t1_trg_pog = w->function("t_trg_pog_deeptau_medium_mutau_ratio")->getVal();
   sf_htt_tau1 = t1_trg_pog;
   
-  w->var("t_pt")->setVal(mytau2.Pt());
-  w->var("t_eta")->setVal(mytau2.Eta());
-  w->var("t_phi")->setVal(mytau2.Phi());
+  w->var("t_pt")->setVal(tau2P4.Pt());
+  w->var("t_eta")->setVal(tau2P4.Eta());
+  w->var("t_phi")->setVal(tau2P4.Phi());
   w->var("t_dm")->setVal(t2DecayMode);
   double t2_deeptauid = w->function("t_deeptauid_dm_medium")->getVal();
   double t2_trg_pog = w->function("t_trg_pog_deeptau_medium_mutau_ratio")->getVal();
@@ -628,8 +652,8 @@ double smhtt_2018::getScaleFactors(  double tau1pt, double tau2pt, double tau1et
   // }
   
   rv_sf =  sf_tau1idSF_m * sf_tau2idSF_m * t1_trg_pog * t2_trg_pog * sf_tauTrg * sf_fakeEleMu * higgPt_weight * zptmass_weight;
-  if(isFakebkg)
-    rv_sf = rv_sf * sf_tau1idSF_vvvl;
+  // if(isFakebkg)
+  //   rv_sf = rv_sf * sf_tau1idSF_vvvl;
   if(rv_sf>0 )
     return rv_sf;
   else
@@ -660,14 +684,8 @@ bool smhtt_2018::isVBF()
     {
       if( abs(j1eta - j2eta) > 2.5 )
 	{ 
-	  TLorentzVector mytau2; 
-	  mytau2.SetPtEtaPhiM(t2Pt, t2Eta, t2Phi, t2Mass);
-	  TLorentzVector mytau1;
-	  mytau1.SetPtEtaPhiM(t1Pt, t1Eta, t1Phi, t1Mass);
-	  TLorentzVector my_metP4;
-	  my_metP4.SetPtEtaPhiM(type1_pfMetEt,0,type1_pfMetPhi,0);
 
-	  if( (mytau2 + mytau1 + my_metP4).Pt() > 100 )
+	  if( (tau2P4 + tau1P4 + metP4).Pt() > 100 )
 	    return true;
 	}
     }
@@ -695,4 +713,25 @@ double smhtt_2018::eleMuSF(int genmatch, double taueta)
   
   //cout<<"genmatch="<< genmatch <<"  taueta="<<abs(taueta)<<"  "<<sf_fakeLepton<<endl;
   return sf_fakeLepton;
+}
+
+void smhtt_2018::applyTauESCorrections(TLorentzVector tauP4, float GenMatching, float DecayMode, TLorentzVector& tauP4Corr)
+{
+  
+  if(is_MC)
+  {
+    if (GenMatching==5) tauP4Corr=tauP4*get_BinContent( h_tauesSF, DecayMode);
+    // if (GenMatching>=5 && DecayMode==0) tauP4Corr=tauP4*0.987;
+    // else if (GenMatching>=5 && DecayMode==1) tauP4Corr=tauP4*0.995;
+    // else if (GenMatching>=5 && DecayMode==10) tauP4Corr=tauP4*0.988;
+    if (  (GenMatching==1 || GenMatching==3) && DecayMode==0 ) tauP4Corr=tauP4*0.969;
+    else if ( (GenMatching==1 || GenMatching==3) && DecayMode==1) tauP4Corr=tauP4*1.026;
+    if (  (GenMatching==2 || GenMatching==4) && DecayMode==0 ) tauP4Corr=tauP4*0.998;
+    else if ( (GenMatching==2 || GenMatching==4) && DecayMode==1) tauP4Corr=tauP4*0.990;
+    
+    // if (DecayMode == 0 ) tauP4Corr.SetPtEtaPhiM(tauP4Corr.Pt(), tauP4Corr.Eta(), tauP4Corr.Phi(), 0.1349766);
+    //tauP4Corr = tauP4Corr* get_zptmass_weight(); 
+  }
+  else
+    tauP4Corr = tauP4;
 }

@@ -107,6 +107,7 @@ public :
   
 
   bool is_MC;
+  TLorentzVector tau1P4, tau2P4, metP4;
    // Declaration of leaf types
    Float_t         DoubleMediumHPSTau35Pass;
    Float_t         DoubleMediumHPSTau35TightIDPass;
@@ -1555,7 +1556,7 @@ public :
    bool isVBF();
    bool isZeroJet();
    double eleMuSF(int genmatch, double taueta);
-
+   void applyTauESCorrections(TLorentzVector tauP4, float GenMatching, float DecayMode, TLorentzVector& tauP4Corr);
 
    
 };

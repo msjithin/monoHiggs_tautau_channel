@@ -180,6 +180,13 @@ public:
     //   visCorr =  get_mvis_closure(mvis, osssclosure_qcd_high);
     //cout <<"finally  " <<ff_qcd<<"\n\n" <<endl;
     
+
+    // cout<<"inputs =  tau1pt="<<pt << "   tau2pt="<<lpt << "    mvis="<<mvis << "    njets="<<njets<<endl;
+    // cout<<"raw ff = "<<get_BinContent(ff_qcd_0jet_tt, pt)<<"  "<<get_BinContent(ff_qcd_1jet_tt, pt)<<"  "<<get_BinContent(ff_qcd_2jet_tt, pt)<<"  "<<endl;
+    // cout<<"tau2 corr = "<<tau2Pt_corr->Eval(lpt)<<endl;
+    // cout<<"mvis corr = "<<get_mvis_closure(mvis, osssclosure_qcd_low)<<"  "<<get_mvis_closure(mvis, osssclosure_qcd_high)<<endl;
+    // cout <<"finally  " <<ff_qcd<<"\n\n" <<endl;
+
     return ff_qcd;
   }
   
